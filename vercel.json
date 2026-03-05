@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "functions": {
+    "src/app/api/get-result/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}
