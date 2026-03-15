@@ -150,11 +150,11 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/convert" className="btn-primary text-lg">
-              Convert My Resume — $9.99
+              Convert My Resume — FREE
             </Link>
           </div>
           <p className="mt-6 text-sm text-navy-300">
-            One-time payment · No subscription · Instant delivery
+            Free tier includes text resume + scoring · $4.99 for Word download
           </p>
         </div>
       </section>
@@ -168,8 +168,8 @@ export default function Home() {
           </div>
           <div className="hidden sm:block w-px bg-navy-200" />
           <div>
-            <div className="text-2xl font-bold text-navy-900">$9.99</div>
-            <div className="text-sm text-navy-500">One-Time Payment</div>
+            <div className="text-2xl font-bold text-navy-900">FREE</div>
+            <div className="text-sm text-navy-500">Basic Version</div>
           </div>
           <div className="hidden sm:block w-px bg-navy-200" />
           <div>
@@ -263,7 +263,7 @@ export default function Home() {
           <p className="section-subheading">
             Professional federal resume writers charge $200-$500 and take 5-10 business days.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <div className="card border-navy-200 opacity-75">
               <h3 className="text-lg font-bold text-navy-400 mb-4">
                 Traditional Resume Writer
@@ -281,41 +281,66 @@ export default function Home() {
                 <li className="flex items-start gap-2">
                   <span className="mt-1">🔄</span>Limited revisions
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-1">📧</span>Back-and-forth over email
-                </li>
               </ul>
             </div>
-            <div className="card border-2 border-accent-400 relative">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent-400 text-navy-950 text-sm font-bold px-4 py-1 rounded-full">
-                BEST VALUE
+            
+            <div className="card border-2 border-green-400 relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">
+                FREE
               </div>
               <h3 className="text-lg font-bold text-navy-900 mb-4">
-                FedResume AI
+                FedResume Basic
               </h3>
               <div className="text-4xl font-extrabold text-navy-900 mb-1">
-                $9.99
+                $0
               </div>
-              <p className="text-sm text-navy-400 mb-6">one-time payment</p>
+              <p className="text-sm text-navy-400 mb-6">no payment required</p>
               <ul className="space-y-3 text-navy-700">
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-1">✓</span>Ready in under 2 minutes
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500 mt-1">✓</span>Tailored to your specific listing
+                  <span className="text-green-500 mt-1">✓</span>Federal format & KSAs
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500 mt-1">✓</span>Proper federal format & KSAs
+                  <span className="text-green-500 mt-1">✓</span>Scoring & keyword analysis
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500 mt-1">✓</span>Instant download
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-500 mt-1">✓</span>Works for all GS levels
+                  <span className="text-green-500 mt-1">✓</span>Plain text download
                 </li>
               </ul>
               <Link href="/convert" className="btn-primary w-full mt-8">
-                Convert Now — $9.99
+                Try Free Now
+              </Link>
+            </div>
+            
+            <div className="card border-2 border-accent-400 relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent-400 text-navy-950 text-sm font-bold px-4 py-1 rounded-full">
+                PRO
+              </div>
+              <h3 className="text-lg font-bold text-navy-900 mb-4">
+                FedResume Pro
+              </h3>
+              <div className="text-4xl font-extrabold text-navy-900 mb-1">
+                $4.99
+              </div>
+              <p className="text-sm text-navy-400 mb-6">one-time payment</p>
+              <ul className="space-y-3 text-navy-700">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500 mt-1">✓</span>Everything in Basic
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500 mt-1">✓</span><strong>Professional DOCX format</strong>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500 mt-1">✓</span><strong>Detailed gap analysis</strong>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-500 mt-1">✓</span>Ready-to-submit formatting
+                </li>
+              </ul>
+              <Link href="/convert" className="btn-primary w-full mt-8">
+                Upgrade to Pro
               </Link>
             </div>
           </div>
@@ -365,10 +390,10 @@ export default function Home() {
           </h2>
           <p className="text-navy-300 text-lg mb-10 max-w-xl mx-auto">
             Your qualifications aren't the problem — your resume format is.
-            Fix it in 2 minutes for less than the cost of lunch.
+            Fix it in 2 minutes, starting completely free.
           </p>
           <Link href="/convert" className="btn-primary text-lg">
-            Convert My Resume — $9.99
+            Convert My Resume — FREE
           </Link>
         </div>
       </section>

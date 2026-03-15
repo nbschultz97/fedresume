@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     // Rate limiting
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
-    const rateCheck = checkRateLimit(ip);
+    const rateCheck = checkRateLimit(ip, 'checkout');
     if (!rateCheck.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a moment." },
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       } else {
         const price = await stripe.prices.create({
           product: product.id,
-          unit_amount: 999,
+          unit_amount: 499,
           currency: "usd",
         });
         priceId = price.id;

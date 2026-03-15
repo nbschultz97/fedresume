@@ -6,10 +6,12 @@ import { useState } from "react";
 export default function ConvertPage() {
   const [resume, setResume] = useState("");
   const [jobListing, setJobListing] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleFreeSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
@@ -22,13 +24,59 @@ export default function ConvertPage() {
       return;
     }
 
+    setShowEmailCapture(true);
+  }
+
+  async function handleEmailSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (!email.trim() || !email.includes('@')) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
 
     try {
+      const res = await fetch("/api/generate-free", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          resume: resume.trim(),
+          jobListing: jobListing.trim(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to generate resume");
+      }
+
+      // Store the results and redirect to results page
+      sessionStorage.setItem("fedresume_free_data", JSON.stringify({
+        resume: data.resume,
+        scoring: data.scoring,
+        email,
+      }));
+
+      window.location.href = "/results?mode=free";
+    } catch (err: any) {
+      setError(err.message || "Something went wrong. Please try again.");
+      setLoading(false);
+    }
+  }
+
+  async function handlePaidSubmit() {
+    try {
+      setLoading(true);
+      
       // Store resume data in sessionStorage for retrieval after payment
       sessionStorage.setItem(
         "fedresume_data",
-        JSON.stringify({ resume, jobListing })
+        JSON.stringify({ resume, jobListing, email })
       );
 
       const res = await fetch("/api/create-checkout", {
@@ -79,7 +127,8 @@ export default function ConvertPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        {!showEmailCapture ? (
+          <form onSubmit={handleFreeSubmit} className="space-y-8">
           <div className="card">
             <label
               htmlFor="resume"
@@ -148,12 +197,6 @@ Specialized Experience: You must have one year of specialized experience...
             </div>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm">
-              {error}
-            </div>
-          )}
-
           <div className="text-center">
             <button
               type="submit"
@@ -181,14 +224,119 @@ Specialized Experience: You must have one year of specialized experience...
                   Processing...
                 </span>
               ) : (
-                "Continue to Payment — $9.99"
+                "Continue — FREE"
               )}
             </button>
             <p className="text-sm text-navy-400 mt-4">
-              Secure payment via Stripe · Your resume is generated after payment
+              Free tier includes text resume + scoring report
             </p>
           </div>
         </form>
+        ) : (
+          <div className="space-y-8">
+            <div className="card bg-accent-50 border-accent-200">
+              <h2 className="text-2xl font-bold text-navy-900 mb-4">Choose Your Option</h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Free Tier */}
+                <div className="border-2 border-navy-200 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-navy-900 mb-3">Free</h3>
+                  <ul className="space-y-2 text-sm text-navy-600 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Plain text federal resume
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Scoring report & analysis
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Keyword optimization
+                    </li>
+                  </ul>
+                  
+                  <form onSubmit={handleEmailSubmit} className="space-y-4">
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-navy-700 mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full border border-navy-200 rounded-lg p-3 text-navy-800 placeholder-navy-400 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent"
+                        placeholder="your.email@example.com"
+                        required
+                      />
+                    </div>
+                    
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? "Generating..." : "Get Free Resume"}
+                    </button>
+                  </form>
+                </div>
+
+                {/* Pro Tier */}
+                <div className="border-2 border-accent-400 rounded-xl p-6 relative">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-400 text-navy-950 text-xs font-bold px-3 py-1 rounded-full">
+                    RECOMMENDED
+                  </div>
+                  
+                  <h3 className="text-lg font-bold text-navy-900 mb-1">Pro</h3>
+                  <div className="text-2xl font-bold text-navy-900 mb-3">$4.99</div>
+                  
+                  <ul className="space-y-2 text-sm text-navy-600 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Everything in Free tier
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      <strong>Professional DOCX download</strong>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      <strong>Detailed gap analysis</strong>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Ready-to-submit formatting
+                    </li>
+                  </ul>
+                  
+                  <button
+                    onClick={handlePaidSubmit}
+                    disabled={loading}
+                    className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? "Processing..." : "Get Pro Version — $4.99"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={() => setShowEmailCapture(false)}
+                className="text-navy-500 hover:text-navy-700 text-sm underline"
+              >
+                ← Back to edit resume/job listing
+              </button>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm mt-6">
+            {error}
+          </div>
+        )}
       </div>
     </main>
   );

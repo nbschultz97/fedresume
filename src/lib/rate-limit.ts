@@ -1,29 +1,35 @@
 // Simple in-memory rate limiter (resets on deploy/restart — fine for Vercel serverless)
-const windowMs = 60 * 1000; // 1 minute window
-const maxRequests = 5; // max requests per IP per window
+const rateLimitConfigs = {
+  default: { windowMs: 60 * 1000, maxRequests: 5 },
+  'free-generation': { windowMs: 60 * 1000, maxRequests: 3 }, // More restrictive for free tier
+  'docx-download': { windowMs: 60 * 1000, maxRequests: 10 }, // More generous for paid downloads
+  'checkout': { windowMs: 60 * 1000, maxRequests: 5 },
+};
 
-const ipRequests = new Map<string, { count: number; resetAt: number }>();
+const rateLimitData = new Map<string, { count: number; resetAt: number }>();
 
 // Cleanup old entries every 5 minutes to prevent memory leak
 setInterval(() => {
   const now = Date.now();
-  for (const [ip, data] of ipRequests.entries()) {
+  rateLimitData.forEach((data, key) => {
     if (now > data.resetAt) {
-      ipRequests.delete(ip);
+      rateLimitData.delete(key);
     }
-  }
+  });
 }, 5 * 60 * 1000);
 
-export function checkRateLimit(ip: string): { allowed: boolean; retryAfterMs?: number } {
+export function checkRateLimit(ip: string, operation: keyof typeof rateLimitConfigs = 'default'): { allowed: boolean; retryAfterMs?: number } {
+  const config = rateLimitConfigs[operation];
+  const key = `${ip}:${operation}`;
   const now = Date.now();
-  const entry = ipRequests.get(ip);
+  const entry = rateLimitData.get(key);
 
   if (!entry || now > entry.resetAt) {
-    ipRequests.set(ip, { count: 1, resetAt: now + windowMs });
+    rateLimitData.set(key, { count: 1, resetAt: now + config.windowMs });
     return { allowed: true };
   }
 
-  if (entry.count >= maxRequests) {
+  if (entry.count >= config.maxRequests) {
     return { allowed: false, retryAfterMs: entry.resetAt - now };
   }
 

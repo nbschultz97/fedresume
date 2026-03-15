@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { convertToFederalResume } from "@/lib/gemini";
+import { convertToFederalResume, scoreResumeAgainstJob } from "@/lib/gemini";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60; // Allow up to 60s for AI generation on Vercel
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     // Rate limiting
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
-    const rateCheck = checkRateLimit(ip);
+    const rateCheck = checkRateLimit(ip, 'default');
     if (!rateCheck.allowed) {
       return NextResponse.json(
         { error: "Too many requests. Please try again in a moment." },
@@ -61,6 +61,18 @@ export async function POST(req: NextRequest) {
       jobListing.slice(0, 50000)
     );
 
+    // Generate scoring for paid users
+    let scoring = null;
+    try {
+      scoring = await scoreResumeAgainstJob(
+        federalResume,
+        jobListing.slice(0, 50000)
+      );
+    } catch (error) {
+      console.error("Failed to generate scoring (non-critical):", error);
+      // Don't fail the whole request if scoring fails
+    }
+
     // Mark session as generated
     try {
       await stripe.checkout.sessions.update(sessionId, {
@@ -74,7 +86,7 @@ export async function POST(req: NextRequest) {
       console.error("Failed to update session metadata:", e);
     }
 
-    return NextResponse.json({ resume: federalResume });
+    return NextResponse.json({ resume: federalResume, scoring });
   } catch (error: any) {
     console.error("Generate error:", error);
 

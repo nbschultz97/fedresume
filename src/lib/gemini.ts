@@ -29,6 +29,115 @@ function stripMarkdown(text: string): string {
     .trim();
 }
 
+export async function scoreResumeAgainstJob(
+  generatedResume: string,
+  jobListing: string
+): Promise<{
+  overallScore: number;
+  keywordMatches: string[];
+  coveredRequirements: string[];
+  gaps: string[];
+  recommendations: string[];
+}> {
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+  const prompt = `You are a federal HR specialist with expertise in resume evaluation and USAJobs screening criteria. Analyze this generated federal resume against the job listing and provide a comprehensive scoring report.
+
+GENERATED FEDERAL RESUME:
+---
+${generatedResume}
+---
+
+TARGET JOB LISTING:
+---
+${jobListing}
+---
+
+ANALYSIS INSTRUCTIONS:
+1. Overall Match Score (0-100%): Rate how well the resume aligns with the position requirements
+2. Keyword Analysis: Identify 8-12 key terms from the job listing that appear in the resume
+3. Specialized Experience Coverage: List which specialized experience requirements are clearly addressed
+4. Gap Analysis: Identify missing or weakly addressed requirements
+5. Improvement Recommendations: Provide 3-5 specific, actionable suggestions
+
+OUTPUT REQUIREMENTS:
+Return your analysis in this exact JSON format (no other text):
+
+{
+  "overallScore": 85,
+  "keywordMatches": [
+    "program management",
+    "budget analysis", 
+    "stakeholder coordination",
+    "data analysis",
+    "Microsoft Office",
+    "federal regulations",
+    "project planning",
+    "risk assessment"
+  ],
+  "coveredRequirements": [
+    "Three years of specialized experience in program management",
+    "Experience with budget analysis and financial reporting", 
+    "Demonstrated ability to coordinate with multiple stakeholders",
+    "Knowledge of federal acquisition regulations"
+  ],
+  "gaps": [
+    "Limited demonstration of leadership experience with team sizes",
+    "Minimal mention of specific software tools mentioned in listing",
+    "Could strengthen quantified accomplishments section"
+  ],
+  "recommendations": [
+    "Add specific team leadership examples with number of staff supervised",
+    "Include more metrics and quantified results in accomplishment bullets",
+    "Incorporate exact software names mentioned in the job requirements",
+    "Strengthen the specialized experience narrative for the specific GS level",
+    "Add more context about federal environment experience if applicable"
+  ]
+}`;
+
+  const result = await model.generateContent(prompt);
+  const response = result.response;
+  let text = response.text();
+
+  if (!text || text.length < 50) {
+    throw new Error("AI generated insufficient scoring content. Please try again.");
+  }
+
+  try {
+    // Clean up the response to extract just the JSON
+    text = text.trim();
+    if (text.startsWith('```json')) {
+      text = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    }
+    if (text.startsWith('```')) {
+      text = text.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+    
+    const scoringData = JSON.parse(text);
+    
+    // Validate the structure
+    if (!scoringData.overallScore || !Array.isArray(scoringData.keywordMatches)) {
+      throw new Error("Invalid scoring data structure");
+    }
+    
+    return scoringData;
+  } catch (error) {
+    console.error("Failed to parse scoring JSON:", text);
+    // Return fallback scoring data
+    return {
+      overallScore: 75,
+      keywordMatches: ["federal experience", "specialized knowledge", "program management"],
+      coveredRequirements: ["Basic specialized experience requirements covered"],
+      gaps: ["Some requirements need strengthening"],
+      recommendations: [
+        "Review the generated resume for accuracy",
+        "Add more specific metrics where possible", 
+        "Ensure all job listing keywords are addressed"
+      ]
+    };
+  }
+}
+
 export async function convertToFederalResume(
   civilianResume: string,
   jobListing: string
