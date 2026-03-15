@@ -24,21 +24,21 @@ const steps = [
   },
 ];
 
-const testimonials = [
+const benefits = [
   {
-    name: "Sarah M.",
-    role: "Former Marketing Manager → GS-12 Program Analyst",
-    text: "I spent three weekends trying to rewrite my resume for a federal position. FedResume did it in minutes and included terminology I never would have known to use.",
+    title: "Proper Federal Format",
+    desc: "Hours/week, supervisor info, salary history, detailed narratives — everything USAJobs screening requires.",
+    icon: "📋",
   },
   {
-    name: "James T.",
-    role: "Software Engineer → GS-13 IT Specialist",
-    text: "Worth every penny. The KSA sections alone saved me hours of research. Got a referral on my first application.",
+    title: "KSA Narratives Built In",
+    desc: "Context-Challenge-Action-Result stories extracted from YOUR experience, matched to the listing's requirements.",
+    icon: "🎯",
   },
   {
-    name: "Maria L.",
-    role: "Project Coordinator → GS-11 Management Analyst",
-    text: "I paid a resume writer $350 for something worse than what FedResume generated. Seriously wish I'd found this first.",
+    title: "Keyword Optimized",
+    desc: "Mirrors the exact language from the job announcement so automated HR screening doesn't filter you out.",
+    icon: "🔍",
   },
 ];
 
@@ -135,7 +135,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-8">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             <span className="text-sm text-white/80">
-              Used by 2,000+ federal job applicants
+              AI-powered federal resume conversion
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
@@ -159,27 +159,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Social Proof Bar */}
+      {/* Value Props Bar */}
       <section className="py-8 bg-navy-50 border-b border-navy-100">
         <div className="max-w-4xl mx-auto px-4 flex flex-wrap justify-center gap-8 text-center">
           <div>
-            <div className="text-2xl font-bold text-navy-900">2,000+</div>
-            <div className="text-sm text-navy-500">Resumes Converted</div>
-          </div>
-          <div className="hidden sm:block w-px bg-navy-200" />
-          <div>
-            <div className="text-2xl font-bold text-navy-900">4.8★</div>
-            <div className="text-sm text-navy-500">Average Rating</div>
-          </div>
-          <div className="hidden sm:block w-px bg-navy-200" />
-          <div>
             <div className="text-2xl font-bold text-navy-900">&lt; 2 min</div>
-            <div className="text-sm text-navy-500">Average Delivery</div>
+            <div className="text-sm text-navy-500">Delivery Time</div>
           </div>
           <div className="hidden sm:block w-px bg-navy-200" />
           <div>
             <div className="text-2xl font-bold text-navy-900">$9.99</div>
-            <div className="text-sm text-navy-500">Per Conversion</div>
+            <div className="text-sm text-navy-500">One-Time Payment</div>
+          </div>
+          <div className="hidden sm:block w-px bg-navy-200" />
+          <div>
+            <div className="text-2xl font-bold text-navy-900">All GS Levels</div>
+            <div className="text-sm text-navy-500">GS-5 through SES</div>
+          </div>
+          <div className="hidden sm:block w-px bg-navy-200" />
+          <div>
+            <div className="text-2xl font-bold text-navy-900">OPM Format</div>
+            <div className="text-sm text-navy-500">USAJobs Compatible</div>
           </div>
         </div>
       </section>
@@ -322,28 +322,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* What You Get */}
       <section className="py-20 px-4 bg-navy-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="section-heading">What Our Users Say</h2>
+          <h2 className="section-heading">What You Get</h2>
           <p className="section-subheading">
-            Join thousands who landed federal positions with FedResume.
+            A complete, properly formatted federal resume tailored to your target position.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <div key={t.name} className="card">
-                <div className="flex gap-1 text-accent-500 mb-4">
-                  {"★★★★★".split("").map((s, i) => (
-                    <span key={i}>{s}</span>
-                  ))}
-                </div>
-                <p className="text-navy-600 leading-relaxed mb-6 italic">
-                  "{t.text}"
-                </p>
-                <div>
-                  <div className="font-bold text-navy-900">{t.name}</div>
-                  <div className="text-sm text-navy-400">{t.role}</div>
-                </div>
+            {benefits.map((b) => (
+              <div key={b.title} className="card text-center">
+                <div className="text-4xl mb-4">{b.icon}</div>
+                <h3 className="text-xl font-bold text-navy-900 mb-3">
+                  {b.title}
+                </h3>
+                <p className="text-navy-500 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -389,17 +382,24 @@ export default function Home() {
             </div>
             <span>FedResume</span>
           </div>
-          <div>
-            A{" "}
-            <a
-              href="https://ceradonsystems.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-navy-300 hover:text-white transition-colors underline"
-            >
-              Ceradon Systems
-            </a>{" "}
-            product · © {new Date().getFullYear()}
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <span>
+              A{" "}
+              <a
+                href="https://ceradonsystems.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-navy-300 hover:text-white transition-colors underline"
+              >
+                Ceradon Systems
+              </a>{" "}
+              product · © {new Date().getFullYear()}
+            </span>
+            <span className="hidden sm:inline text-navy-600">·</span>
+            <div className="flex gap-4">
+              <Link href="/privacy" className="text-navy-400 hover:text-navy-200 transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="text-navy-400 hover:text-navy-200 transition-colors">Terms of Service</Link>
+            </div>
           </div>
         </div>
       </footer>

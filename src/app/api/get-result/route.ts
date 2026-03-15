@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { convertToFederalResume } from "@/lib/gemini";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60; // Allow up to 60s for AI generation on Vercel
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+    const rateCheck = checkRateLimit(ip);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again in a moment." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((rateCheck.retryAfterMs || 60000) / 1000)) } }
+      );
+    }
+
     const body = await req.json();
     const { sessionId, resume, jobListing } = body;
 
@@ -38,7 +49,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Resume already generated for this payment. If you lost your result, please contact support@fedresume.ai",
+            "Resume already generated for this payment. If you lost your result, please contact noah@ceradonsystems.com",
         },
         { status: 410 }
       );

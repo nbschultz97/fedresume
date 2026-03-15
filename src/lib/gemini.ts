@@ -10,7 +10,7 @@ export async function convertToFederalResume(
   civilianResume: string,
   jobListing: string
 ): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `You are an expert federal resume writer with 20+ years of experience helping civilians transition to government positions. You deeply understand OPM (Office of Personnel Management) standards, USAJobs requirements, and federal HR screening processes.
 
