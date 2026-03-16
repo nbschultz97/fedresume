@@ -106,14 +106,14 @@ export default function Home() {
             </span>
           </Link>
           <div className="flex items-center gap-6">
-            <a href="#how-it-works" className="hidden sm:inline text-navy-500 hover:text-navy-800 transition-colors text-sm font-medium">
-              How It Works
-            </a>
+            <Link href="/benefits" className="hidden sm:inline text-navy-500 hover:text-navy-800 transition-colors text-sm font-medium">
+              Benefits
+            </Link>
+            <Link href="/blog" className="hidden sm:inline text-navy-500 hover:text-navy-800 transition-colors text-sm font-medium">
+              Blog
+            </Link>
             <a href="#pricing" className="hidden sm:inline text-navy-500 hover:text-navy-800 transition-colors text-sm font-medium">
               Pricing
-            </a>
-            <a href="#faq" className="hidden sm:inline text-navy-500 hover:text-navy-800 transition-colors text-sm font-medium">
-              FAQ
             </a>
             <Link
               href="/convert"
@@ -418,10 +418,12 @@ export default function Home() {
               >
                 Ceradon Systems
               </a>{" "}
-              product · © {new Date().getFullYear()}
+              product — Veteran-Founded SDVOSB · © {new Date().getFullYear()}
             </span>
             <span className="hidden sm:inline text-navy-600">·</span>
             <div className="flex gap-4">
+              <Link href="/benefits" className="text-navy-400 hover:text-navy-200 transition-colors">Benefits</Link>
+              <Link href="/blog" className="text-navy-400 hover:text-navy-200 transition-colors">Blog</Link>
               <Link href="/privacy" className="text-navy-400 hover:text-navy-200 transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="text-navy-400 hover:text-navy-200 transition-colors">Terms of Service</Link>
             </div>
